@@ -1,0 +1,96 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.coding.villaSystem.mapper.StoreMapper">
+    <resultMap id="StoreWithCity" type="com.coding.villaSystem.entity.Store">
+        <id column="store_id" property="storeId"/>
+        <result column="store_name" property="storeName"/>
+        <result column="store_tel" property="storeTel"/>
+        <result column="store_city" property="storeCity"/>
+        <result column="store_address" property="storeAddress"/>
+        <result column="add_user_id" property="addUserId"/>
+        <result column="store_addtime" property="storeAddTime"/>
+        <result column="store_city_id" property="storeCityId"/>
+        <association property="city" javaType="com.coding.villaSystem.entity.City">
+            <id column="city_id" property="cityId"/>
+            <result column="city_name" property="cityName"/>
+            <result column="province_name" property="provinceName"/>
+            <result column="add_user_id" property="addUserId"/>
+            <result column="city_addtime" property="cityAddTime"/>
+        </association>
+        <association property="user" javaType="com.coding.villaSystem.entity.User">
+            <id column="user_id" property="userId"/>
+            <result column="user_account" property="userAccount"/>
+            <result column="user_password" property="userPassword"/>
+            <result column="user_name" property="userName"/>
+            <result column="user_addtime" property="userAddtime"/>
+        </association>
+    </resultMap>
+    <select id="getStoreWithCity" resultMap="StoreWithCity">
+        SELECT store_id,store_name,store_tel,store_city,store_address,user_account,city_name,store_city_id,store_addtime
+        FROM store
+        LEFT JOIN city ON store.store_city_id=city.city_id
+        LEFT JOIN user ON store.add_user_id=user.user_id
+        <where>
+            <if test="condition != null and condition != ''">
+                (
+                store_id LIKE CONCAT('%',#{condition},'%')
+                OR
+                store_name LIKE CONCAT('%',#{condition},'%')
+                OR
+                store_tel LIKE CONCAT('%',#{condition},'%')
+                OR
+                store_address LIKE CONCAT('%',#{condition},'%')
+                OR
+                user_account LIKE CONCAT('%',#{condition},'%')
+                )
+            </if>
+            <if test="start != null and end != null">
+                AND city_addtime BETWEEN #{start} AND #{end}
+            </if>
+            <if test="cityNumber != null">
+                AND store_city_id LIKE CONCAT('%',#{cityNumber},'%')
+            </if>
+        </where>
+        ORDER BY store_addtime DESC
+    </select>
+    <select id="getStoreByStoreId" resultType="com.coding.villaSystem.entity.Store">
+        SELECT store_id, store_name, store_tel, store_city, store_address, add_user_id, store_city_id
+        FROM store
+        WHERE store_id = #{storeId}
+    </select>
+    <select id="getAllStore" resultType="com.coding.villaSystem.entity.Store">
+
+        SELECT store_id, store_name, store_tel, store_city, store_address, add_user_id, store_city_id
+        FROM store
+        ORDER BY store_addtime DESC
+
+    </select>
+    <insert id="addStore" parameterType="com.coding.villaSystem.entity.Store">
+
+        INSERT INTO store (store_name, store_tel, store_city, store_address, add_user_id, store_city_id)
+        VALUES (#{storeName}, #{storeTel}, #{storeCity}, #{storeAddress}, #{addUserId}, #{storeCityId})
+
+    </insert>
+
+    <update id="updateStore" parameterType="com.coding.villaSystem.entity.Store">
+
+        UPDATE store
+        SET store_name    = #{storeName},
+            store_tel     = #{storeTel},
+            store_city    = #{storeCity},
+            store_address = #{storeAddress},
+            add_user_id   = #{addUserId},
+            store_city_id = #{storeCityId}
+        WHERE store_id = #{storeId}
+
+    </update>
+    <delete id="deleteStore" parameterType="com.coding.villaSystem.entity.Store">
+
+        DELETE
+        FROM store
+        WHERE store_id = #{storeId}
+
+    </delete>
+</mapper>

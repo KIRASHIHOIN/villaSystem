@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Home</title>
+    <div th:replace="common/head::head"></div>
+</head>
+
+<body>
+<!-- 主盒子 -->
+<div id="wrapper">
+
+    <!-- 上方导航栏 -->
+    <nav th:replace="common/nav::nav"></nav>
+    <!-- 上方导航栏结束 -->
+
+    <!-- 左侧栏 -->
+    <div th:replace="common/left::left"></div>
+    <!-- 左侧栏结束 -->
+
+
+    <!-- 主页面盒子 -->
+    <div class="main">
+        <!-- 内容区盒子 -->
+        <div class="main-content">
+            <!-- 表格区盒子 -->
+            <div class="panel">
+                <!-- 表格头部 -->
+                <div class="panel-heading">
+                    <!-- 表格标题 -->
+                    <h3 class="panel-title">信息展示</h3>
+                    <div class="right">
+                        <button type="button" class="btn-toggle-collapse"><i class="lnr lnr-chevron-up"></i></button>
+                        <button type="button" class="btn-remove"><i class="lnr lnr-cross"></i></button>
+                    </div>
+                </div>
+
+                <!-- 表格主体 -->
+                <div class="panel-body no-padding">
+
+                    <!-- 搜索控件 -->
+                    <form class="navbar-form navbar-left">
+                        <!-- 搜索框 -->
+                        <div class="input-group">
+                            <!--用户ID：<input type="text" name="userId" th:value="${session.id}" readonly>
+                            用户名称：<input type="text" name="userAccount" th:value="${session.account}" readonly>-->
+                            <h1>暂无可用信息</h1>
+                        </div>
+                    </form>
+                </div>
+                <!-- 内容区盒子结束 -->
+            </div>
+            <!-- 主页面盒子结束 -->
+
+        </div>
+        <!-- 主盒子结束 -->
+
+        <!-- Javascript -->
+        <div th:replace="common/foot :: foot"></div>
+    </div>
+</div>
+</body>
+</html>

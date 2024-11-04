@@ -1,0 +1,97 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.coding.villaSystem.mapper.VillaMapper">
+    <resultMap id="VillaWithStore" type="com.coding.villaSystem.entity.Villa">
+        <id column="villa_id" property="villaId"/>
+        <result column="villa_name" property="villaName"/>
+        <result column="villa_store_id" property="villaStoreId"/>
+        <result column="villa_add_user_id" property="villaAddUserId"/>
+        <result column="villa_price" property="villaPrice"/>
+        <result column="villa_image" property="villaImage"/>
+        <result column="villa_add_time" property="villaAddTime"/>
+        <association property="store" javaType="com.coding.villaSystem.entity.Store">
+            <id column="store_id" property="storeId"/>
+            <result column="store_name" property="storeName"/>
+            <result column="store_tel" property="storeTel"/>
+            <result column="store_city" property="storeCity"/>
+            <result column="store_address" property="storeAddress"/>
+            <result column="add_user_id" property="addUserId"/>
+            <result column="store_addtime" property="storeAddTime"/>
+            <result column="store_city_id" property="storeCityId"/>
+        </association>
+        <association property="user" javaType="com.coding.villaSystem.entity.User">
+            <id column="user_id" property="userId"/>
+            <result column="user_account" property="userAccount"/>
+            <result column="user_password" property="userPassword"/>
+            <result column="user_name" property="userName"/>
+            <result column="user_addtime" property="userAddtime"/>
+        </association>
+    </resultMap>
+    <select id="getVillaWithStore" resultMap="VillaWithStore">
+
+        SELECT villa_id,villa_name,villa_store_id,villa_add_user_id,villa_price,villa_image,villa_add_time,store_name,user_account
+        FROM villa
+        LEFT JOIN store ON villa.villa_store_id = store.store_id
+        LEFT JOIN user ON villa.villa_add_user_id = user.user_id
+        <where>
+            <if test="condition != null and condition != ''">
+                (
+                villa_id LIKE CONCAT('%',#{condition},'%')
+                OR
+                villa_name LIKE CONCAT('%',#{condition},'%')
+                OR
+                villa_price LIKE CONCAT('%',#{condition},'%')
+                OR
+                store_name LIKE CONCAT('%',#{condition},'%')
+                OR
+                user_account LIKE CONCAT('%',#{condition},'%')
+                )
+            </if>
+            <if test="start != null and end != null">
+                AND villa_add_time BETWEEN #{start} AND #{end}
+            </if>
+            <if test="storeNumber != null">
+                AND villa_store_id = #{storeNumber}
+            </if>
+        </where>
+        ORDER BY villa_add_time DESC
+    </select>
+    <select id="getAllVilla" resultType="com.coding.villaSystem.entity.Villa">
+
+        SELECT villa_id, villa_name, villa_store_id, villa_price, villa_image, villa_add_time
+        FROM villa
+
+    </select>
+    <select id="getVillaByVillaId" resultType="com.coding.villaSystem.entity.Villa">
+
+        SELECT villa_id, villa_name, villa_store_id, villa_price, villa_image, villa_add_time,villa_add_user_id
+        FROM villa
+        WHERE villa_id = #{villaId}
+
+    </select>
+    <insert id="addVilla" parameterType="com.coding.villaSystem.entity.Villa">
+
+        INSERT INTO villa (villa_name, villa_store_id, villa_add_user_id, villa_price, villa_image)
+        VALUES (#{villaName}, #{villaStoreId}, #{villaAddUserId}, #{villaPrice}, #{villaImage})
+
+    </insert>
+    <update id="updateVilla" parameterType="com.coding.villaSystem.entity.Villa">
+
+        UPDATE villa
+        SET villa_name        = #{villaName},
+            villa_store_id    = #{villaStoreId},
+            villa_add_user_id = #{villaAddUserId},
+            villa_price       = #{villaPrice},
+            villa_image       = #{villaImage}
+        WHERE villa_id = #{villaId}
+
+    </update>
+    <delete id="deleteVilla" parameterType="com.coding.villaSystem.entity.Villa">
+
+        DELETE FROM villa
+        WHERE villa_id = #{villaId}
+
+    </delete>
+</mapper>

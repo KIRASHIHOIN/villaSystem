@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<title>项目首页</title>
+	<div th:replace="common/head::head"></div>
+</head>
+
+<body>
+<!-- 主盒子 -->
+<div id="wrapper">
+
+	<!-- 上方导航栏 -->
+	<nav th:replace="common/nav::nav"></nav>
+	<!-- 上方导航栏结束 -->
+
+	<!-- 左侧栏 -->
+	<div th:replace="common/left::left"></div>
+	<!-- 左侧栏结束 -->
+		
+		
+		<!-- 主页面盒子 -->
+		<div class="main">
+			<!-- 内容区盒子 -->
+			<div class="main-content">
+				<h1>欢迎使用别墅管理系统</h1>
+			</div>
+			<!-- 内容区盒子结束 -->
+		</div>
+		<!-- 主页面盒子结束 -->
+		
+	</div>
+	<!-- 主盒子结束 -->
+	
+	<!-- Javascript -->
+	<div th:replace="common/foot::foot"></div>
+</body>
+</html>

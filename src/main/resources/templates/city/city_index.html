@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>城市信息页面</title>
+    <div th:replace="common/head::head"></div>
+</head>
+
+<body>
+<!-- 主盒子 -->
+<div id="wrapper">
+
+    <!-- 上方导航栏 -->
+    <nav th:replace="common/nav::nav"></nav>
+    <!-- 上方导航栏结束 -->
+
+    <!-- 左侧栏 -->
+    <div th:replace="common/left::left"></div>
+    <!-- 左侧栏结束 -->
+
+
+    <!-- 主页面盒子 -->
+    <div class="main">
+        <!-- 内容区盒子 -->
+        <div class="main-content">
+            <!-- 表格区盒子 -->
+            <div class="panel">
+                <!-- 表格头部 -->
+                <div class="panel-heading">
+                    <!-- 表格标题 -->
+                    <h3 class="panel-title">城市数据展示</h3>
+                    <div class="right">
+                        <button type="button" class="btn-toggle-collapse"><i class="lnr lnr-chevron-up"></i></button>
+                        <button type="button" class="btn-remove"><i class="lnr lnr-cross"></i></button>
+                    </div>
+                </div>
+
+                <!-- 表格主体 -->
+                <div class="panel-body no-padding">
+
+                    <!-- 搜索控件 -->
+                    <form class="navbar-form navbar-left" th:action="@{/city/goIndex}">
+                        <!-- 搜索框 -->
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="condition" th:value="${cityPageVo.condition}"
+                                   placeholder="请输入搜索数据...">
+                        </div>
+
+                        <!-- 起始时间 -->
+                        <div class="input-group">
+                            <input type="date" name="start" th:value="${cityPageVo.start}" class="form-control">
+                        </div>
+                        <!-- 终止时间 -->
+                        <div class="input-group">
+                            <input type="date" name="end" th:value="${cityPageVo.end}" class="form-control">
+                        </div>
+
+                        <!-- 按钮和超链接 -->
+                        <div class="input-group">
+                            <span class="input-group-btn"><button type="submit"
+                                                                  class="btn btn-success">查询</button></span>
+                            <span class="input-group-btn"><a th:href="@{/city/goAddCity}" class="btn btn-primary"
+                                                             style="margin-left: 5px;">添加</a></span>
+                            <span class="input-group-btn"><a href="#" class="btn btn-danger" onclick="deleteMany()"
+                                                             style="margin-left: 5px;">批量删除</a></span>
+                        </div>
+                        <div th:if="${cityPageVo.getPageList().size()} == 0">
+                            没有查询到结果
+                        </div>
+                    </form>
+
+                    <table class="table table-striped">
+                        <!-- 表头 -->
+                        <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" id="checkAll" onclick="checkAll()"/>
+                                ID
+                            </th>
+                            <th>城市名</th>
+                            <th>所在省</th>
+                            <th>添加人</th>
+                            <th>添加时间</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="city:${cityPageVo.pageList}">
+                            <td>
+                                <input type="checkbox" class="check" th:value="${city.getCityId()}"
+                                       onclick="allCheck()"/>
+                                <span th:text="${city.getCityId()}"></span>
+                            </td>
+                            <td th:text="${city.getCityName()}"></td>
+                            <td th:text="${city.getProvinceName()}"></td>
+                            <td th:text="${city.getUser().getUserAccount()}"></td>
+                            <td th:text="${city.getCityAddTime()}"></td>
+                            <td>
+                                <a th:href="@{/city/goUpdateCity(cityId=${city.getCityId()})}"
+                                   class="label label-primary">编辑</a>
+                                <a href="#" class="label label-danger"
+                                   th:onclick="'deleteCity(' + ${city.getCityId()} + ')'">删除</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- 分页控件 -->
+                    <ul class="pagination" style="float: right;margin-right: 1%;margin-top: 0%;">
+                        <li><a th:href="@{/city/goIndex(currentPage = ${cityPageVo.currentPage + 1},
+                            condition = ${cityPageVo.condition},
+                            start = ${cityPageVo.start},
+                            end = ${cityPageVo.end})}">&raquo;</a></li>
+                    </ul>
+                    <ul class="pagination" style="float: right;margin-right: 1%;margin-top: 0%;">
+                        <li th:each=" i : ${#numbers.sequence(1,cityPageVo.totalPage)}"
+                            th:class="${ i ==  cityPageVo.currentPage?'active':''}">
+                            <a th:href="@{/city/goIndex(currentPage = ${i},
+                            condition = ${cityPageVo.condition},
+                            start = ${cityPageVo.start},
+                            end = ${cityPageVo.end})}" th:text="${i}"></a>
+                        </li>
+                    </ul>
+                    <ul class="pagination" style="float: right;margin-right: 1%;margin-top: 0%;">
+                        <li><a th:href="@{/city/goIndex(currentPage = ${cityPageVo.currentPage - 1},
+                            condition = ${cityPageVo.condition},
+                            start = ${cityPageVo.start},
+                            end = ${cityPageVo.end})}">&laquo;</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- 内容区盒子结束 -->
+    </div>
+    <!-- 主页面盒子结束 -->
+
+</div>
+<!-- 主盒子结束 -->
+
+<!-- Javascript -->
+<div th:replace="common/foot :: foot"></div>
+<script>
+    function deleteMany() {
+        let result = confirm("是否确认删除？")
+        if (result) {
+            let ids = []
+            $(".check:checked").each(function (index, obj) {
+                ids.push($(obj).val())
+            })
+            $.ajax({
+                url: "/city/deleteMany",
+                type: "get",
+                data: {ids: ids},
+                success: function (res) {
+                    if (res) {
+                        alert("删除成功")
+                        location.reload() //刷新当前页面！
+                    } else {
+                        alert("删除失败")
+                    }
+                },
+                error: function () {
+                    alert("报错了！")
+                }
+            })
+        }
+    }
+
+    function allCheck() {
+        if ($(".check").length === $(".check:checked").length) {
+            $("#checkAll").prop("checked", true)
+        } else {
+            $("#checkAll").prop("checked", false)
+        }
+    }
+
+    function checkAll() {
+        if ($("#checkAll").prop("checked") === true) {
+            $(".check").prop("checked", true)
+        } else {
+            $(".check").prop("checked", false)
+        }
+    }
+
+    function deleteCity(cityId) {
+        let result = confirm("是否确认删除？")
+        if (result) {
+            $.ajax({
+                url: "/city/doDelete",
+                type: "get",
+                data: {cityId: cityId},
+                success: function (res) {
+                    if (res) {
+                        alert("删除成功")
+                        location.reload() //刷新当前页面！
+                    } else {
+                        alert("删除失败")
+                    }
+                },
+                error: function () {
+                    alert("报错了！")
+                }
+            })
+        }
+    }
+</script>
+</body>
+</html>

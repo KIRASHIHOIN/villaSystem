@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<nav th:fragment="nav" class="navbar navbar-default navbar-fixed-top">
+    <div class="brand">
+        <!-- logo图片 -->
+        <a th:href="@{/index.html}"><img th:src="@{/assets/img/logo-dark.png}" alt="Klorofil Logo"
+                                         class="img-responsive logo"></a>
+    </div>
+
+    <!-- 左侧栏伸缩按钮 -->
+    <div class="navbar-btn">
+        <button type="button" class="btn-toggle-fullwidth"><i class="lnr lnr-arrow-left-circle"></i></button>
+    </div>
+
+    <!-- 标题 -->
+    <div class="navbar-header" style="margin-left: 27%;">
+        <h1>别墅预定管理平台</h1>
+    </div>
+
+    <!-- 右上方欢迎信息 -->
+    <div id="navbar-menu">
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle icon-menu" data-toggle="dropdown">
+                    <i class="lnr lnr-alarm"></i>
+                    <span class="badge bg-danger">3</span>
+                </a>
+                <ul class="dropdown-menu notifications">
+                    <li><a href="#" class="notification-item"><span class="dot bg-warning"></span>待办事情1</a></li>
+                    <li><a href="#" class="notification-item"><span class="dot bg-danger"></span>待办事情2</a></li>
+                    <li><a href="#" class="notification-item"><span class="dot bg-success"></span>待办事情3</a></li>
+                </ul>
+            </li>
+
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span>欢迎<span
+                        th:text="${session.account}"></span>登陆</span> <i
+                        class="icon-submenu lnr lnr-chevron-down"></i></a>
+                <ul class="dropdown-menu">
+                    <li><a th:href="@{/user/goUserCenter}"><i class="lnr lnr-user"></i> <span>个人中心</span></a></li>
+                    <li><a th:href="@{/user/goInformation}"><i class="lnr lnr-envelope"></i> <span>信息展示</span></a></li>
+                    <li><a th:href="@{/user/goResetPassword}"><i class="lnr lnr-cog"></i>
+                        <span>修改密码</span></a></li>
+                    <li><a th:href="@{/user/goLogout}"><i class="lnr lnr-exit"></i> <span>登出</span></a></li>
+                </ul>
+            </li>
+
+
+            <!-- 显示时间 -->
+            <div class="navbar-btn navbar-btn-right">
+                <a class="btn btn-success" href="#"><i class="glyphicon glyphicon-time"></i><span id="time"></span></a>
+            </div>
+        </ul>
+    </div>
+</nav>
+</body>
+</html>

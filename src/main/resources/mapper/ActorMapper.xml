@@ -1,0 +1,68 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.coding.villaSystem.mapper.ActorMapper">
+    <select id="selectActorByCondition" resultType="com.coding.villaSystem.entity.Actor">
+        SELECT
+        actor_id,
+        actor_name,
+        actor_describe,
+        actor_addtime
+        FROM actor
+        <where>
+            <if test="condition != null and condition != ''">
+                (
+                actor_id LIKE CONCAT('%',#{condition},'%')
+                OR
+                actor_name LIKE CONCAT('%',#{condition},'%')
+                OR
+                actor_describe LIKE CONCAT('%',#{condition},'%')
+                )
+            </if>
+            <if test="start != null and end != null">
+                AND actor_addtime BETWEEN #{start} AND #{end}
+            </if>
+        </where>
+        ORDER BY actor_addtime DESC
+    </select>
+    <select id="selectActorById" resultType="com.coding.villaSystem.entity.Actor">
+        SELECT actor_id,
+               actor_name,
+               actor_describe,
+               actor_addtime
+        FROM actor
+        WHERE actor_id = #{actorId}
+    </select>
+    <select id="selectAllActor" resultType="com.coding.villaSystem.entity.Actor">
+        SELECT actor_id,
+               actor_name,
+               actor_describe,
+               actor_addtime
+        FROM actor
+        ORDER BY actor_addtime DESC
+    </select>
+    <insert id="insertActor" parameterType="com.coding.villaSystem.entity.Actor">
+        INSERT INTO actor (actor_name, actor_describe)
+        VALUES (#{actorName}, #{actorDescribe})
+    </insert>
+    <select id="selectActorByName" resultType="com.coding.villaSystem.entity.Actor">
+        SELECT actor_id,
+               actor_name,
+               actor_describe,
+               actor_addtime
+        FROM actor
+        WHERE actor_name = #{actorName}
+    </select>
+    <update id="updateActor" parameterType="com.coding.villaSystem.entity.Actor">
+        UPDATE actor
+        SET actor_name     = #{actorName},
+            actor_describe = #{actorDescribe}
+        WHERE actor_id = #{actorId}
+    </update>
+    <delete id="deleteActor" parameterType="com.coding.villaSystem.entity.Actor">
+        DELETE
+        FROM actor
+        WHERE actor_id = #{actorId}
+    </delete>
+</mapper>

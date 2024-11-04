@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<title>Home</title>
+	<div th:replace="common/head::head"></div>
+	<style>
+		.panel-body{
+			height: 530px !important;
+		}
+
+		.panel-scrolling .slimScrollDiv{
+			height: 530px !important;
+		}
+
+		.input-group{
+			width: 300px;
+			margin-bottom: 20px;
+			margin-left: 15px;
+		}
+	</style>
+</head>
+
+<body>
+<!-- 主盒子 -->
+<div id="wrapper">
+
+	<!-- 上方导航栏 -->
+	<nav th:replace="common/nav::nav"></nav>
+	<!-- 上方导航栏结束 -->
+
+	<!-- 左侧栏 -->
+	<div th:replace="common/left::left"></div>
+	<!-- 左侧栏结束 -->
+		
+		
+		<!-- 主页面部分 -->
+		<div class="main">
+			
+			<!-- 内容区盒子：授权页面 -->
+			<div class="panel panel-scrolling">
+				<div class="panel-heading">
+					<!-- 标题 -->
+					<h3 class="panel-title">角色授权</h3>
+					
+					<div class="right">
+						<button type="button" class="btn-toggle-collapse"><i class="lnr lnr-chevron-up"></i></button>
+						<button type="button" class="btn-remove"><i class="lnr lnr-cross"></i></button>
+					</div>
+				</div>
+				
+				<div class="panel-body">
+					
+					<div class="content">
+						<!-- 授权信息(所有权限展示) -->
+						<form th:action="@{/per/updatePer}" class="panel-form">
+							
+							<!-- 当前用户名 -->
+							<div class="input-group">
+								<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+								<input type="text" class="form-control" th:value="${actor.actorName}" readonly>
+								<input type="hidden" class="form-control" name="actorId" th:value="${actor.actorId}" readonly>
+							</div>
+							
+							<ul class="nav nav-permission">
+								<!-- 第一个主权限 -->
+								<li th:each="fatherPermission,i:${permissions}">
+									<a th:href="${'#majorPermission'+i.count}" data-toggle="collapse" class="collapsed in">
+										<h1 style="display: inline;" th:text="${fatherPermission.permissionDescribe}"></h1></a>
+									<div th:id="${'majorPermission'+i.count}" class="collapse in">
+										<ul class="nav">
+											<li>
+												<br />
+												<!-- 第一个主权限对应的所有分权限 -->
+												<label class="fancy-checkbox" style="display: inline-block"th:each="childPermission:${fatherPermission.childPermission}">
+													<input type="checkbox" name="permissionIds" th:value="${childPermission.permissionId}" th:checked="${childPermission.checkStatic}">
+													<span style="font-size: 18px;"th:text="${childPermission.permissionDescribe}"></span>
+												</label>
+												&nbsp;&nbsp;&nbsp;
+												<br />
+												<br />
+											</li>
+										</ul>
+									</div>
+								</li>
+								<br/>
+							<!-- 授权按钮 -->
+							<button class="btn btn-primary btn-bottom center-block">授权</button>
+						</form>
+					</div>
+					
+					
+				</div>
+			</div>
+			<!-- 内容区盒子：授权页面结束 -->
+			
+		</div>
+		<!-- 主页面部分结束 -->
+		
+	</div>
+	<!-- 主盒子结束 -->
+	
+	
+	
+	
+	<!-- Javascript -->
+<div th:replace="common/foot::foot"></div>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>新增城市页面</title>
+    <div th:replace="common/head::head"></div>
+</head>
+
+<body>
+<!-- 主盒子 -->
+<div id="wrapper">
+
+    <!-- 上方导航栏 -->
+    <nav th:replace="common/nav::nav"></nav>
+    <!-- 上方导航栏结束 -->
+
+    <!-- 左侧栏 -->
+    <div th:replace="common/left::left"></div>
+    <!-- 左侧栏结束 -->
+
+
+    <!-- 主页面部分 -->
+    <div class="main">
+
+        <!-- 内容区盒子1：添加信息 -->
+        <div class="main-content">
+            <!-- 表格区盒子 -->
+            <div class="panel">
+                <!-- 表格头部 -->
+                <div class="panel-heading">
+                    <!-- 表格标题 -->
+                    <div class="right">
+                        <button type="button" class="btn-toggle-collapse"><i class="lnr lnr-chevron-up"></i></button>
+                        <button type="button" class="btn-remove"><i class="lnr lnr-cross"></i></button>
+                    </div>
+                </div>
+
+                <!-- 表单主体 -->
+                <div class="panel-body no-padding">
+                    <!-- 添加信息 -->
+                    <div class="auth-box">
+                        <div class="content">
+                            <div class="header">
+                                <p class="lead">新增城市</p>
+                            </div>
+                            <form class="form-auth-small" th:action="@{/city/addCity}">
+                                <span th:text="${error}" style="color: red;"></span>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                    <input type="text" class="form-control" th:value="${session.account}" readonly="readonly">
+                                    <input type="hidden" class="form-control" name="addUserId" th:value="${session.id}" readonly="readonly">
+                                </div>
+                                <br>
+
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-plane"></i></span>
+                                    <input type="text" class="form-control" name="provinceName" placeholder="所在省份...">
+                                </div>
+                                <br>
+
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-comment"></i></span>
+                                    <input type="text" class="form-control" name="cityName" placeholder="所在城市...">
+                                </div>
+                                <br>
+
+                                <button type="submit" class="btn btn-primary btn-lg btn-block">添加</button>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- 内容区盒子1：添加信息结束 -->
+
+
+    </div>
+    <!-- 主页面部分结束 -->
+</div>
+<!-- 主盒子结束 -->
+
+
+<!-- Javascript -->
+<div th:replace="common/foot :: foot"></div>
+</body>
+</html>

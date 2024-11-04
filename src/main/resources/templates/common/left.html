@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!-- 左侧栏 -->
+<div id="sidebar-nav" class="sidebar" th:fragment="left">
+    <div class="sidebar-scroll" style="margin-top: 10%;">
+        <nav>
+            <ul class="nav">
+                <li><a href="system_index"><i class="lnr lnr-home">
+                </i> <span>后台管理</span></a></li>
+                <li th:each="fatherPermission, i : ${session.permissions}">
+                    <a th:href="${'#subPages' + i.count}" data-toggle="collapse" class="collapsed">
+                        <i class="lnr lnr-cog"></i>
+                        <span th:text="${fatherPermission.permissionDescribe}"></span>
+                        <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+                    <div th:id="${'subPages' + i.count}" class="collapse ">
+                        <ul class="nav">
+                            <li th:each="childPermission : ${fatherPermission.childPermission}">
+                                <a th:href="${childPermission.permissionPath}" class="" th:text="${childPermission.permissionDescribe}"></a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+<!-- 左侧栏结束 -->
+</body>
+</html>

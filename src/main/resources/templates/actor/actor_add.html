@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<title>Home</title>
+	<div th:replace="common/head::head"></div>
+</head>
+
+<body>
+<!-- 主盒子 -->
+<div id="wrapper">
+
+	<!-- 上方导航栏 -->
+	<nav th:replace="common/nav::nav"></nav>
+	<!-- 上方导航栏结束 -->
+
+	<!-- 左侧栏 -->
+	<div th:replace="common/left::left"></div>
+	<!-- 左侧栏结束 -->
+		
+		
+		<!-- 主页面部分 -->
+		<div class="main">
+			
+			<!-- 内容区盒子1：添加信息 -->
+			<div class="main-content">
+				<!-- 表格区盒子 -->
+				<div class="panel">
+					<!-- 表格头部 -->
+					<div class="panel-heading">
+						<!-- 表格标题 -->
+						<div class="right">
+							<button type="button" class="btn-toggle-collapse"><i class="lnr lnr-chevron-up"></i></button>
+							<button type="button" class="btn-remove"><i class="lnr lnr-cross"></i></button>
+						</div>
+					</div>
+					
+					<!-- 表单主体 -->
+					<div class="panel-body no-padding">
+						<!-- 添加信息 -->
+						<div class="auth-box" style="height: 700px">
+							<div class="content">
+								<div class="header">
+									<p class="lead">角色数据添加</p>
+								</div>
+								<form class="form-auth-small" th:action="@{/actor/addActor}">
+									<span th:text="${error}" style="color: red;"></span>
+									<div class="input-group">
+										<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+										<input type="text" class="form-control" name="actorName"
+											   placeholder="请输入角色名称..." >
+									</div>
+									<br>
+									
+									<div class="input-group">
+										<span class="input-group-addon"><i class="glyphicon glyphicon-star-empty"></i></span>
+										<input type="text" class="form-control" name="actorDescribe"
+											   placeholder="请输入角色描述...">
+									</div>
+									<br>
+									
+									<ul class="nav nav-permission">
+										<li th:each="fatherPermission,i:${permissions}">
+											<a th:href="${'#majorPermission'+i.count}" data-toggle="collapse" class="collapsed in">
+												<h1 style="display: inline;" th:text="${fatherPermission.permissionDescribe}"></h1></a>
+											<div th:id="${'majorPermission'+i.count}" class="collapse in">
+												<ul class="nav">
+													<li>
+														<br />
+														<!-- 第一个主权限对应的所有分权限 -->
+														<label class="fancy-checkbox" style="display: inline-block"th:each="childPermission:${fatherPermission.childPermission}">
+															<input type="checkbox" name="permissionIds" th:value="${childPermission.permissionId}" th:checked="${childPermission.checkStatic}">
+															<span style="font-size: 18px;"th:text="${childPermission.permissionDescribe}"></span>
+														</label>
+														&nbsp;&nbsp;&nbsp;
+														<br />
+														<br />
+													</li>
+												</ul>
+											</div>
+										</li>
+									</ul>
+									
+									<button type="submit" class="btn btn-primary btn-lg btn-block">添加</button>
+								</form>
+							</div>
+						</div>
+								
+					</div>
+				</div>
+			</div>
+			<!-- 内容区盒子1：添加信息结束 -->
+			
+			
+		</div>
+		<!-- 主页面部分结束 -->
+	</div>
+	<!-- 主盒子结束 -->
+	
+	
+	
+	
+	<!-- Javascript -->
+<div th:replace="common/foot::foot"></div>
+</body>
+</html>

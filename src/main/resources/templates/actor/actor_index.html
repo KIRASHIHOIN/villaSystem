@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Home</title>
+    <div th:replace="common/head::head"></div>
+</head>
+
+<body>
+<!-- 主盒子 -->
+<div id="wrapper">
+
+    <!-- 上方导航栏 -->
+    <nav th:replace="common/nav::nav"></nav>
+    <!-- 上方导航栏结束 -->
+
+    <!-- 左侧栏 -->
+    <div th:replace="common/left::left"></div>
+    <!-- 左侧栏结束 -->
+
+
+    <!-- 主页面盒子 -->
+    <div class="main">
+        <!-- 内容区盒子 -->
+        <div class="main-content">
+            <!-- 表格区盒子 -->
+            <div class="panel">
+                <!-- 表格头部 -->
+                <div class="panel-heading">
+                    <!-- 表格标题 -->
+                    <h3 class="panel-title">角色数据展示</h3>
+                    <div class="right">
+                        <button type="button" class="btn-toggle-collapse"><i class="lnr lnr-chevron-up"></i></button>
+                        <button type="button" class="btn-remove"><i class="lnr lnr-cross"></i></button>
+                    </div>
+                </div>
+
+                <!-- 表格主体 -->
+                <div class="panel-body no-padding">
+
+                    <!-- 搜索控件 -->
+                    <form class="navbar-form navbar-left" th:action="@{/actor/goIndex}" method="post">
+                        <!-- 搜索框 -->
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="condition" th:value="${actorPageVo.condition}"
+                                   placeholder="请输入搜索数据...">
+                        </div>
+
+                        <!-- 起始时间 -->
+                        <div class="input-group">
+                            <input type="date" name="start" th:value="${actorPageVo.start}" class="form-control">
+                        </div>
+                        <!-- 终止时间 -->
+                        <div class="input-group">
+                            <input type="date" name="end" th:value="${actorPageVo.end}" class="form-control">
+                        </div>
+
+                        <!-- 按钮和超链接 -->
+                        <div class="input-group">
+                            <span class="input-group-btn"><button type="submit"
+                                                                  class="btn btn-success">查询</button></span>
+                            <span class="input-group-btn"><a th:href="@{/actor/toAddActor}" class="btn btn-primary"
+                                                             style="margin-left: 5px;">添加</a></span>
+                            <span class="input-group-btn"><a href="#" class="btn btn-danger" onclick="deleteMany()"
+                                                             style="margin-left: 5px;">批量删除</a></span>
+                        </div>
+                        <div th:if="${actorPageVo.getPageList().size()} == 0">
+                            没有查询到结果
+                        </div>
+                    </form>
+
+                    <table class="table table-striped">
+                        <!-- 表头 -->
+                        <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" id="checkAll" onclick="checkAll()"/>
+                                ID
+                            </th>
+                            <th>角色名称</th>
+                            <th>角色描述</th>
+                            <th>添加时间</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="actor:${actorPageVo.pageList}">
+                            <td>
+                                <input type="checkbox" class="check" th:value="${actor.getActorId()}"
+                                       onclick="allCheck()"/>
+                                <span th:text="${actor.actorId}"></span>
+                            </td>
+                            <td th:text="${actor.actorName}"></td>
+                            <td th:text="${actor.actorDescribe}"></td>
+                            <td th:text="${actor.actorAddtime}"></td>
+                            <td>
+                                <a th:href="@{/actor/toUpdateActor(actorId=${actor.actorId})}"
+                                   class="label label-primary">编辑</a>
+                                <a href="#" class="label label-danger"
+                                   th:onclick="'deleteActor(' + ${actor.getActorId()} + ')'">删除</a>
+                                <a th:href="@{/per/toPer(actorId=${actor.actorId})}"
+                                   class="label label-primary">授权</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- 分页控件 -->
+                    <ul class="pagination" style="float: right;margin-right: 1%;margin-top: 0%;">
+                        <li>
+                            <a th:href="@{/actor/goIndex(currentPage = ${actorPageVo.currentPage + 1},
+                            condition = ${actorPageVo.condition},
+                            start = ${actorPageVo.start},
+                            end = ${actorPageVo.end})}">&raquo;</a>
+                        </li>
+                    </ul>
+                    <ul class="pagination" style="float: right;margin-right: 1%;margin-top: 0%;">
+                        <li th:each=" i : ${#numbers.sequence(1,actorPageVo.totalPage)}"
+                            th:class="${ i ==  actorPageVo.currentPage?'active':''}">
+                            <a th:href="@{/actor/goIndex(currentPage = ${i},
+                            condition = ${actorPageVo.condition},
+                            start = ${actorPageVo.start},
+                            end = ${actorPageVo.end})}" th:text="${i}"></a>
+                        </li>
+                    </ul>
+                    <ul class="pagination" style="float: right;margin-right: 1%;margin-top: 0%;">
+                        <li><a th:href="@{/actor/goIndex(currentPage = ${actorPageVo.currentPage - 1},
+                            condition = ${actorPageVo.condition},
+                            start = ${actorPageVo.start},
+                            end = ${actorPageVo.end})}">&laquo;</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- 内容区盒子结束 -->
+    </div>
+    <!-- 主页面盒子结束 -->
+
+</div>
+<!-- 主盒子结束 -->
+
+<!-- Javascript -->
+<div th:replace="common/foot::foot"></div>
+<script>
+    function deleteMany() {
+        let result = confirm("是否确认删除？")
+        if (result) {
+            let ids = []
+            $(".check:checked").each(function (index, obj) {
+                ids.push($(obj).val())
+            })
+            $.ajax({
+                url: "/actor/deleteMany",
+                type: "get",
+                data: {ids: ids},
+                success: function (res) {
+                    if (res) {
+                        alert("删除成功")
+                        location.reload() //刷新当前页面！
+                    } else {
+                        alert("删除失败")
+                    }
+                },
+                error: function () {
+                    alert("报错了！")
+                }
+            })
+        }
+    }
+
+    function allCheck() {
+        if ($(".check").length === $(".check:checked").length) {
+            $("#checkAll").prop("checked", true)
+        } else {
+            $("#checkAll").prop("checked", false)
+        }
+    }
+
+    function checkAll() {
+        if ($("#checkAll").prop("checked") === true) {
+            $(".check").prop("checked", true)
+        } else {
+            $(".check").prop("checked", false)
+        }
+    }
+
+    function deleteActor(actorId) {
+        let result = confirm("是否确认删除？")
+        if (result) {
+            $.ajax({
+                url: "/actor/doDelete",
+                type: "get",
+                data: {actorId: actorId},
+                success: function (res) {
+                    if (res) {
+                        alert("删除成功")
+                        location.reload() //刷新当前页面！
+                    } else {
+                        alert("删除失败")
+                    }
+                },
+                error: function () {
+                    alert("报错了！")
+                }
+            })
+        }
+    }
+</script>
+</body>
+</html>

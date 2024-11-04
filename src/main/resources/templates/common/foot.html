@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="foot">
+    <script th:src="@{/assets/vendor/jquery/jquery.min.js}"></script>
+    <script th:src="@{/assets/vendor/bootstrap/js/bootstrap.min.js}"></script>
+    <script th:src="@{/assets/vendor/jquery-slimscroll/jquery.slimscroll.min.js}"></script>
+    <script th:src="@{/assets/vendor/jquery.easy-pie-chart/jquery.easypiechart.min.js}"></script>
+    <script th:src="@{/assets/vendor/chartist/js/chartist.min.js}"></script>
+    <script th:src="@{/assets/scripts/klorofil-common.js}"></script>
+    <script th:src="@{/js/jquery_1.js}"></script>
+
+    <script type="text/javascript">
+        //JQ代码请在此处编写...
+        //显示当前时间
+        clock();
+        var attime;
+
+        function clock() {
+            var time = new Date();
+            attime = time.toLocaleTimeString();
+            $("#time").text(attime);
+        }
+
+        setInterval(clock, 1000);
+    </script>
+</div>
+</body>
+</html>

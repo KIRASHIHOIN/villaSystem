@@ -1,0 +1,86 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.coding.villaSystem.mapper.UserMapper">
+    <resultMap id="UserWithActor" type="com.coding.villaSystem.entity.User">
+        <id column="user_id" property="userId"/>
+        <result column="user_account" property="userAccount"/>
+        <result column="user_password" property="userPassword"/>
+        <result column="user_name" property="userName"/>
+        <result column="user_addtime" property="userAddtime"/>
+        <association property="actor" javaType="com.coding.villaSystem.entity.Actor">
+            <id column="actor_id" property="actorId"/>
+            <result column="actor_name" property="actorName"/>
+            <result column="actor_describe" property="actorDescribe"/>
+        </association>
+    </resultMap>
+    <select id="selectUserByAccountAndPassword" resultType="com.coding.villaSystem.entity.User">
+        SELECT user_name, user_id, user_account, user_password, actor_id
+        FROM user
+        WHERE user_account = #{userAccount}
+          AND user_password = #{userPassword}
+    </select>
+    <select id="selectUserWithActor" resultMap="UserWithActor">
+        SELECT user_name,user_id, user_account, user_password, user_addtime,
+        user.actor_id,actor.actor_id,actor_name,actor_describe
+        FROM user
+        LEFT JOIN actor
+        ON user.actor_id = actor.actor_id
+        <where>
+            <if test="condition != null and condition != ''">
+                (
+                user_id LIKE CONCAT('%',#{condition},'%')
+                OR
+                user_name LIKE CONCAT('%',#{condition},'%')
+                OR
+                user_account LIKE CONCAT('%',#{condition},'%')
+                OR
+                actor_name LIKE CONCAT('%',#{condition},'%')
+                OR
+                actor_describe LIKE CONCAT('%',#{condition},'%')
+                )
+            </if>
+            <if test="start != null and end != null">
+                AND user_addtime BETWEEN #{start} AND #{end}
+            </if>
+        </where>
+        ORDER BY user_addtime DESC
+    </select>
+    <select id="selectUserByUserId" resultType="com.coding.villaSystem.entity.User">
+        SELECT user_name, user_id, user_account, user_password, actor_id
+        FROM user
+        WHERE user_id = #{userId}
+    </select>
+    <select id="selectUserByUserAccount" resultType="com.coding.villaSystem.entity.User">
+        SELECT user_name, user_id, user_account, user_password, actor_id
+        FROM user
+        WHERE user_account = #{userAccount}
+    </select>
+    <insert id="addUser" parameterType="com.coding.villaSystem.entity.User">
+        INSERT INTO user (user_account, user_password)
+        VALUES (#{userAccount}, #{userPassword})
+    </insert>
+    <update id="updateUserPassword" parameterType="com.coding.villaSystem.entity.User">
+        UPDATE user
+        SET user_password = #{userPassword}
+        WHERE user_id = #{userId}
+    </update>
+    <update id="updateUser" parameterType="com.coding.villaSystem.entity.User">
+        UPDATE user
+        SET user_name     = #{userName},
+            user_account  = #{userAccount},
+            user_password = #{userPassword},
+            actor_id      = #{actorId}
+        WHERE user_id = #{userId}
+    </update>
+    <insert id="newUser" parameterType="com.coding.villaSystem.entity.User">
+        INSERT INTO user (user_name, user_account, user_password, actor_id)
+        VALUES (#{userName}, #{userAccount}, #{userPassword}, #{actorId})
+    </insert>
+    <delete id="deleteUser" parameterType="com.coding.villaSystem.entity.User">
+        DELETE
+        FROM user
+        WHERE user_id = #{userId}
+    </delete>
+</mapper>

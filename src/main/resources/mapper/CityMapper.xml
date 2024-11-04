@@ -1,0 +1,80 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.coding.villaSystem.mapper.CityMapper">
+    <resultMap id="CityWithUser" type="com.coding.villaSystem.entity.City">
+        <id column="city_id" property="cityId"/>
+        <result column="city_name" property="cityName"/>
+        <result column="province_name" property="provinceName"/>
+        <result column="add_user_id" property="addUserId"/>
+        <result column="city_addtime" property="cityAddTime"/>
+        <association property="user" javaType="com.coding.villaSystem.entity.User">
+            <id column="user_id" property="userId"/>
+            <result column="user_account" property="userAccount"/>
+            <result column="user_password" property="userPassword"/>
+            <result column="user_name" property="userName"/>
+            <result column="user_addtime" property="userAddtime"/>
+        </association>
+    </resultMap>
+    <select id="getCityWithUser" resultMap="CityWithUser">
+
+        SELECT city_id,city_name,province_name,add_user_id,city_addtime,user_account
+        FROM city
+        LEFT JOIN user ON city.add_user_id = user.user_id
+        <where>
+            <if test="condition != null and condition != ''">
+                (
+                city_id LIKE CONCAT('%',#{condition},'%')
+                OR
+                city_name LIKE CONCAT('%',#{condition},'%')
+                OR
+                province_name LIKE CONCAT('%',#{condition},'%')
+                OR
+                user_account LIKE CONCAT('%',#{condition},'%')
+                )
+            </if>
+            <if test="start != null and end != null">
+                AND city_addtime BETWEEN #{start} AND #{end}
+            </if>
+        </where>
+        ORDER BY city_addtime DESC
+
+    </select>
+    <select id="getCityByCityId" resultType="com.coding.villaSystem.entity.City">
+
+        SELECT city_id, city_name, province_name, add_user_id, city_addtime
+        FROM city
+        WHERE city_id = #{cityId}
+
+    </select>
+    <select id="getAllCity" resultType="com.coding.villaSystem.entity.City">
+
+        SELECT city_id, city_name, province_name, add_user_id, city_addtime
+        FROM city
+        ORDER BY city_addtime DESC
+
+    </select>
+    <insert id="addCity" parameterType="com.coding.villaSystem.entity.City">
+
+        INSERT INTO city(city_name, province_name, add_user_id)
+        VALUES (#{cityName}, #{provinceName}, #{addUserId})
+
+    </insert>
+    <update id="updateCity" parameterType="com.coding.villaSystem.entity.City">
+
+        UPDATE city
+        SET city_name     = #{cityName},
+            province_name = #{provinceName},
+            add_user_id   = #{addUserId}
+        WHERE city_id = #{cityId}
+
+    </update>
+    <delete id="deleteCity" parameterType="com.coding.villaSystem.entity.City">
+
+        DELETE
+        FROM city
+        WHERE city_id = #{cityId}
+
+    </delete>
+</mapper>
